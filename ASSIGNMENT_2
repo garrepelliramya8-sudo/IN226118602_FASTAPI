@@ -1,0 +1,30 @@
+from fastapi import FastAPI, Query
+from typing import Optional
+
+app = FastAPI()
+
+products = [
+    {"id": 1, "name": "Mouse", "price": 500, "category": "Electronics"},
+    {"id": 2, "name": "Notebook", "price": 100, "category": "Stationery"},
+    {"id": 3, "name": "Keyboard", "price": 800, "category": "Electronics"},
+]
+
+@app.get("/products/filter")
+def filter_products(
+    category: Optional[str] = None,
+    min_price: Optional[int] = Query(None),
+    max_price: Optional[int] = None
+):
+
+    result = products
+
+    if category:
+        result = [p for p in result if p["category"] == category]
+
+    if min_price:
+        result = [p for p in result if p["price"] >= min_price]
+
+    if max_price:
+        result = [p for p in result if p["price"] <= max_price]
+
+    return result
